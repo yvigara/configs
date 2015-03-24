@@ -34,7 +34,12 @@ Plug 'lilydjwg/colorizer'
 Plug 'Yggdroot/indentLine'
 Plug 'mkitt/tabline.vim'
 Plug 'vim-scripts/mru.vim'
+Plug 'fatih/vim-go'
 call plug#end()
+
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
 
 if !has("gui_running")
   let g:gruvbox_italic=0
@@ -90,7 +95,7 @@ let g:airline_section_c = airline#section#create(['%<', '%{getcwd()}', " | ", 'f
 
 let g:syntastic_puppet_checkers=['puppetlint']
 
-let g:niji_matching_filetypes = ['lisp', 'clojure', 'puppet', 'java', 'ruby', 'python']
+let g:niji_matching_filetypes = ['lisp', 'clojure', 'puppet', 'java', 'ruby', 'python', 'go']
 set encoding=utf-8
 set t_Co=256
 set fillchars+=stl:\ ,stlnc:\
@@ -124,6 +129,7 @@ set showmatch
 set matchtime=1
 set novb
 set noshowmode
+set ttyfast
 
 " JJM Enable line numbers, useful for discussion when on a projector
 set number
@@ -137,6 +143,8 @@ highlight DoubleSpaceAfterPeriod ctermbg=red guibg=red
 autocmd Syntax * syn match TrailingWhitespace /\s\+$/
 autocmd Syntax * syn match TabWhitespace /[\t]/
 autocmd Syntax * syn match DoubleSpaceAfterPeriod /\.  /
+autocmd Filetype go setlocal ts=4 sts=4 sw=4 noexpandtab
+autocmd Filetype go hi clear  TabWhitespace
 " Give an indicator when we approach col 80 (>72)
 "au BufWinEnter * let w:m1=matchadd('Search', '\%<81v.\%>72v', -1)
 " Give a strong indicator when we exceed col 80(>80)
