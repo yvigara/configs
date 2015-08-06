@@ -1,62 +1,60 @@
-call plug#begin('~/.vim/plugged')
-Plug 'tpope/vim-sensible'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'morhetz/gruvbox'
-Plug 'tpope/vim-haml'
-Plug 'tpope/vim-cucumber'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-git'
-Plug 'tpope/vim-tbone'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-markdown'
-Plug 'guns/vim-clojure-static'
-Plug 'guns/vim-clojure-highlight'
-Plug 'vim-ruby/vim-ruby'
-Plug 'rodjek/vim-puppet'
-Plug 'bling/vim-bufferline'
-Plug 'amdt/vim-niji'
-Plug 'bling/vim-airline'
-Plug 'majutsushi/tagbar'
-Plug 'scrooloose/syntastic'
-Plug 'kien/ctrlp.vim'
-Plug 'godlygeek/tabular'
-Plug 'ervandew/supertab'
-Plug 'thoughtbot/vim-rspec'
-Plug 'Keithbsmiley/rspec.vim'
-Plug 'vim-scripts/AutoComplPop'
-Plug 'ciaranm/detectindent'
-Plug 'endel/ctrlp-filetype.vim'
-Plug 'lilydjwg/colorizer'
-Plug 'Yggdroot/indentLine'
-Plug 'mkitt/tabline.vim'
-Plug 'vim-scripts/mru.vim'
-Plug 'fatih/vim-go'
-call plug#end()
+" Leader
+let mapleader = " "
 
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
+set backspace=2   " Backspace deletes like most programs in insert mode
+set nobackup
+set nowritebackup
+set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
+set history=500
+set ruler         " show the cursor position all the time
+set cursorline
+set showcmd       " display incomplete commands
+set incsearch     " do incremental searching
+set laststatus=2  " Always display the status line
+set autowrite     " Automatically :write before running commands
+set hidden
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
+  syntax on
+endif
+
+" Plugins Installation: {{{
+
+if filereadable(expand("~/.vimrc.plugins"))
+  source ~/.vimrc.plugins
+endif
+
+"}}}
+
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
+
+filetype plugin indent on
+
+" Gruvbox Config: {{{
 
 if !has("gui_running")
   let g:gruvbox_italic=0
 endif
+set encoding=utf-8
+set t_Co=256
+set term=xterm-256color
+set termencoding=utf-8
+set background=dark
+colorscheme gruvbox
 
-let g:airline#extensions#whitespace#symbol = '!'
-let g:airline#extensions#whitespace#enabled = 1
-let g:airline#extensions#branch#enabled = 1
+" }}}
+" AirLine Config: {{{
+
+let g:airline_theme='hybrid'
+let g:airline_powerline_fonts = 1
 let g:airline_detect_modified=1
 let g:airline_detect_paste=1
-"let g:bufferline_echo = 0
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#fnamecollapse = 3
-let g:airline#extensions#tabline#show_tab_type = 1
-let g:airline#extensions#tabline#fnamemod = ':t'
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline#extensions#hunks#enabled=0
+let g:bufferline_echo = 0
 
 let g:airline_mode_map = {
       \ '__' : '-',
@@ -72,69 +70,88 @@ let g:airline_mode_map = {
       \ '' : 'S',
       \ }
 
-let g:airline#extensions#tagbar#enabled = 1
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = '|'
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = '|'
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-let g:airline_symbols.space = "\ua0"
-let g:airline_symbols.linenr = ''
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.whitespace = 'Ξ'
-let g:bufferline_echo = 0
-
-"let g:airline_section_b = airline#section#create(['%{getcwd()}'])
 let g:airline_section_c = airline#section#create(['%<', '%{getcwd()}', " | ", 'file', "\ua0", 'readonly'])
-"let g:airline_section_y = airline#section#create_right(['hunks', 'branch'])
-"let g:airline_section_y = airline#section#create(['%{getcwd()}'])
-"let g:airline_section_z = airline#section#create(['linenr', ':%3c '])
+
+
+let g:airline_extensions = ['branch', 'ctrlspace', 'tagbar', 'tabline', 'syntastic', 'whitespace']
+let g:airline#extensions#branch#enabled = 1
+
+
+let g:airline#extensions#ctrlspace#enabled = 1
+
+let g:airline#extensions#syntastic#enabled = 1
+
+" Tabline config
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#fnamecollapse = 3
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tabline#show_tab_type = 0
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
+
+
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+
+let g:airline#extensions#tagbar#enabled = 1
+
+let g:airline#extensions#whitespace#symbol = '!'
+let g:airline#extensions#whitespace#enabled = 1
+
+" }}}
+
+" CtrlSpace Config: {{{
+
+let g:CtrlSpaceUseMouseAndArrowsInTerm = 1
+let g:CtrlSpaceFileEngine = "file_engine_darwin_amd64"
+
+" }}}
+
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
 
 let g:syntastic_puppet_checkers=['puppetlint']
 
 let g:niji_matching_filetypes = ['lisp', 'clojure', 'puppet', 'java', 'ruby', 'python', 'go']
-set encoding=utf-8
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
-set laststatus=2
-set term=xterm-256color
-set termencoding=utf-8
-set background=dark
-colorscheme gruvbox
 
-set nocompatible
-" http://www.linux.com/archive/feature/120126
-"set statusline=%F%m%r%h%w\ [TYPE=%Y\ %{&ff}\ %{&fo}]\ [%l/%L,%v\ %p%%]\ [HEX=\%02.2B] %{fugitive#statusline()}
-" set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
-" Always show the status line
-" set laststatus=2
 " Tabs and indentation (Default to two spaces)
 set tabstop=2 "set tab character to 4 characters
 set shiftwidth=2 "indent width for autoindent
+set shiftround
 set expandtab "turn tabs into whitespace
 set smartindent
-set ambiwidth=double
 set display+=lastline
-set cursorline
 set nojoinspaces
 set hlsearch
-set incsearch
 set ignorecase
 set smartcase
-set showcmd
 set showmatch
 set matchtime=1
 set novb
 set noshowmode
 set ttyfast
 
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
+
 " JJM Enable line numbers, useful for discussion when on a projector
 set number
+set numberwidth=5
 
-"call pathogen#infect()
 " JJM Highlight extra white space.
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 highlight TrailingWhitespace ctermbg=red guibg=red
@@ -153,3 +170,31 @@ autocmd Filetype go hi clear  TabWhitespace
 au BufWinEnter * let w:m3=matchadd('ErrorMsg', '\s\+$', -1)
 " Give an indicator of spaces before a tab.
 au BufWinEnter * let w:m4=matchadd('ErrorMsg', ' \+\ze\t', -1)
+au BufNewFile,BufRead *.yaml,*.yml,*.eyaml setf yaml
+autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+nmap <F8> :TagbarToggle<CR>
+
+" Switch between the last two files
+nnoremap <leader><leader> <c-^>
+
+" Run commands that require an interactive shell
+nnoremap <Leader>r :RunInInteractiveShell<space>
+
+
+" Quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+map <C-n> :NERDTreeToggle<CR>
+
+
+" Local config
+if filereadable($HOME . "/.vimrc.local")
+  source ~/.vimrc.local
+endif
+" vim: set noet ft=vim fdm=marker:
